@@ -25,9 +25,32 @@ class NumpyArrayEncoder(JSONEncoder):
 def obtain_geodata():
     nc_file = xarray.open_dataset(geo_data_file)
     bT = nc_file["Total"]
+    total_data = bT.values
     bT = bT.rio.set_spatial_dims(x_dim="lon", y_dim="lat")
-    bT.rio.write_crs("epsg:4326", inplace=True)
-    bT.rio.to_raster(r"test.tif")
+    bT = bT.rio.write_crs("epsg:4326", inplace=True)
+    # burned_area_data_array.rio.write_crs("epsg:4326", inplace=True)
+    bT.rio.to_raster(
+        r"medsea_bottomT_raster.tif",
+        driver="GTiff",
+        # tiled=True,
+        # windowed=True,
+    )
+
+    da0 = xarray.DataArray(
+        data=total_data[0],
+        dims=["x", "y"],
+        coords=dict(
+            x=(["x", "y"], nc_file["lat"].values), y=(["x", "y"], nc_file["lon"].values)
+        ),
+    )
+    da = da0.rio.write_crs("epsg:4326", inplace=True)
+    bT.rio.to_raster(
+        r"new.tif",
+        driver="GTiff",
+        tiled=True,
+        windowed=True,
+    )
+    print(bT)
     with Dataset(geo_data_file) as netcdf_dataset:
         totalData = netcdf_dataset.variables["Total"][:][0]
         numpyData = {"array": totalData}

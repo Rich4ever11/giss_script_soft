@@ -1,45 +1,42 @@
+// @ts-nocheck
 import React from "react";
-import { LatLngExpression } from "leaflet";
+import { useEffect } from "react";
+import { LatLngBoundsExpression, LatLngExpression } from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import GeoRasterLayer from "georaster-layer-for-leaflet";
 // @ts-ignore
 import parseGeoraster from "georaster";
+import L from "leaflet";
+var parse_georaster = require("georaster");
 
-function ParseRaster() {
+function ParseRaster(props) {
+  const { layer } = props;
+  console.log(layer);
   const map = useMap();
 
-  fetch("./../../../../../../scripts/test.tif")
-    .then((response) => response.arrayBuffer())
-    .then((arrayBuffer) => {
-      console.log(arrayBuffer.byteLength);
-      parseGeoraster(arrayBuffer).then((georaster: any) => {
-        console.log("georaster:", georaster);
+  // const bounds = [
+  //   [-90, -180],
+  //   [90, 180],
+  // ];
+  // const image = L.imageOverlay(
+  //   "https://i.imgur.com/Ion6X7C.jpg",
+  //   bounds as LatLngBoundsExpression,
+  //   { opacity: 0.1 }
+  // ).addTo(map);
+  // map.fitBounds(image.getBounds());
 
-        /*
-              GeoRasterLayer is an extension of GridLayer,
-              which means can use GridLayer options like opacity.
+  useEffect(() => {
+    layer.addTo(map);
+    map.setView([0, -70], 3);
+    map.setMaxBounds([
+      [-90, -180],
+      [90, 180],
+    ]);
 
-              Just make sure to include the georaster option!
+    // map.fitBounds(layer.getBounds());
+  }, [layer]);
 
-              Optionally set the pixelValuesToColorFn function option to customize
-              how values for a pixel are translated to a color.
-
-              https://leafletjs.com/reference.html#gridlayer
-          */
-        // var layer = new GeoRasterLayer({
-        //   georaster: georaster,
-        //   opacity: 0.7,
-        //   pixelValuesToColorFn: (values) =>
-        //     values[0] === 42 ? "#ffffff" : "#000000",
-        //   resolution: 64, // optional parameter for adjusting display resolution
-        // });
-        // layer.addTo(map);
-
-        // map.fitBounds(layer.getBounds());
-      });
-    });
-
-  return <div>ParseRaster</div>;
+  return <div></div>;
 }
 
 export default ParseRaster;
