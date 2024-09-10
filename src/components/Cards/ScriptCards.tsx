@@ -35,14 +35,14 @@ function ScriptCards() {
       <Box backgroundColor={"blackAlpha.900"} paddingY={4}>
         <Box position="relative" padding="10">
           <Divider />
-          <AbsoluteCenter bg="black" px="4" rounded={"full"}>
+          <AbsoluteCenter bg="blackAlpha.700" px="4" rounded={"full"}>
             <Text fontSize="4xl" textColor={"white"} padding={4}>
               Python Scripts
             </Text>
           </AbsoluteCenter>
         </Box>
 
-        <Box position="relative" h="75px">
+        <Box position="relative" h="80px">
           <AbsoluteCenter color="white" axis="both">
             <InputGroup>
               <InputLeftElement pointerEvents="none">

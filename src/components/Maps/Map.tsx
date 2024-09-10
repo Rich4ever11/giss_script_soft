@@ -1,6 +1,7 @@
 import { LatLngExpression } from "leaflet";
 import React from "react";
 import { MapContainer, useMap, TileLayer, Marker, Popup } from "react-leaflet";
+import ParseRaster from "./ParseRaster";
 
 function Map() {
   return (
@@ -19,6 +20,7 @@ function Map() {
           A pretty CSS3 popup. <br /> Easily customizable.
         </Popup>
       </Marker>
+      <ParseRaster />
     </MapContainer>
   );
 }
