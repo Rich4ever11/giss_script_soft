@@ -33,10 +33,15 @@ function ScriptCards() {
   return (
     <>
       <Box backgroundColor={"blackAlpha.900"} paddingY={4}>
-        <Box position="relative" padding="10">
+        <Box position="relative" padding={12}>
           <Divider />
-          <AbsoluteCenter bg="blackAlpha.700" px="4" rounded={"full"}>
-            <Text fontSize="4xl" textColor={"white"} padding={4}>
+          <AbsoluteCenter bg="white" px="4" rounded={"full"}>
+            <Text
+              className="font-thin"
+              fontSize="4xl"
+              textColor={"black"}
+              padding={4}
+            >
               Python Scripts
             </Text>
           </AbsoluteCenter>

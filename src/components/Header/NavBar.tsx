@@ -1,9 +1,17 @@
 import { Stack, Text, Image, Box } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { SiNasa } from "react-icons/si";
 import { FaShuttleSpace } from "react-icons/fa6";
 
 function NavBar() {
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/photos")
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {});
+  });
+
   return (
     <div>
       {" "}

@@ -58,8 +58,8 @@ function ScriptModal(props: {
             </FormControl>
 
             <FormControl mt={4}>
-              <FormLabel textColor={"white"}>Last name</FormLabel>
-              <Input placeholder="Last name" textColor={"white"} />
+              <FormLabel textColor={"white"}>File Name</FormLabel>
+              <Input placeholder="File Name" textColor={"white"} />
             </FormControl>
           </ModalBody>
 
