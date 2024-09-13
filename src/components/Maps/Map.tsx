@@ -5,6 +5,8 @@ import ParseRaster from "./ParseRaster";
 import { Card, CardBody, Input, Text } from "@chakra-ui/react";
 import GeoRasterLayer from "georaster-layer-for-leaflet";
 var parse_georaster = require("georaster");
+const { Buffer } = require("buffer");
+// var writeFile = require("fs");
 
 function Map() {
   const [layer, setLayer] = useState<any>(null);
@@ -14,8 +16,12 @@ function Map() {
 
     var reader = new FileReader();
     reader.readAsArrayBuffer(file);
-    reader.onloadend = function () {
+    reader.onloadend = async function () {
       const arrayBuffer = reader.result;
+      // const bufferView = Buffer.from(arrayBuffer as any);
+      // fs.writeFileSync("./newfile.tif", bufferView, () => {
+      //   console.log("FILE SAVED");
+      // });
       parse_georaster(arrayBuffer).then((georaster: any) => {
         /*
               GeoRasterLayer is an extension of GridLayer,
