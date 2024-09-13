@@ -14,11 +14,15 @@ import {
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { FaGlobeAmericas } from "react-icons/fa";
 import React from "react";
+import { useGeoData } from "../../context/GeoDataContext";
 
 function GeoUpload() {
+  const { netcdfData, setNetcdfData } = useGeoData();
   const handleGeoDataFunction = (event: any) => {
-    const netcdf_file = event.target.files[0];
-    console.log(netcdf_file);
+    const netcdfFile = event.target.files[0];
+    var blobUrl = URL.createObjectURL(netcdfFile);
+    console.log(blobUrl);
+    setNetcdfData(netcdfFile);
   };
 
   return (
@@ -54,11 +58,8 @@ function GeoUpload() {
                 />
               </svg>
               <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-semibold">Click to upload</span> or drag
-                and drop
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                SVG, PNG, JPG or GIF (MAX. 800x400px)
+                <span className="font-semibold">Click to upload Netcdf</span> or
+                drag and drop
               </p>
             </div>
             <input
