@@ -56,11 +56,6 @@ function ScriptModal(props: {
                 ))}
               </select>
             </FormControl>
-
-            <FormControl mt={4}>
-              <FormLabel textColor={"white"}>File Name</FormLabel>
-              <Input placeholder="File Name" textColor={"white"} />
-            </FormControl>
           </ModalBody>
 
           <ModalFooter>

@@ -32,20 +32,20 @@ function ScriptCard(props: {
       <Card
         width={"35vh"}
         marginX={4}
-        backgroundColor={"black"}
+        backgroundColor={"gray.900"}
         borderWidth={3}
         borderColor={"white"}
       >
         <CardHeader>
           <VStack>
             <Avatar
-              borderColor={"cyan.100"}
+              borderColor={"gray.300"}
               borderWidth={4}
               showBorder={true}
               marginY={4}
               size="2xl"
               name="Segun Adebayo"
-              src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXZhdGFyfGVufDB8fDB8fHww"
+              src="https://images.unsplash.com/photo-1541873676-a18131494184?q=80&w=2636&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />{" "}
             <Heading className="font-thin" size="xl" textColor={"white"}>
               {file_name}

@@ -83,11 +83,15 @@ def obtain_file_metadata(file_path):
     return metadata
 
 
+# def obtain_script_libraries(file_path):
+
+
 @app.route("/view_scripts", methods=["GET"])
 def obtain_geoscripts():
     file_data = []
     for file in VALID_SCRIPTS:
-        file_data.append({file: obtain_file_metadata(file)})
+        script_data = {"file_metadata": obtain_file_metadata(file)}
+        file_data.append(script_data)
     return json.dumps({"status": "success", "data": file_data})
 
 
@@ -120,7 +124,7 @@ def obtain_netcdf_data():
     )
 
 
-@app.route("/run_script/<script>", methods=["POST"])
+@app.route("/run_script", methods=["POST"])
 def run_geoscript():
     if request.method == "POST":
         filename = request.form.get("filename")
