@@ -20,17 +20,6 @@ GEO_DATA_FILE = "../../geo_data/BA201001.nc"
 GEO_DATA_FOLDER = "../geo_scripts/geo_data"
 GEO_DATA_SCRIPTS_FOLDER = "../geo_scripts"
 
-app = Flask(__name__)
-CORS(app)
-
-
-@app.before_request
-def limit_remote_addr():
-    remote_ip = str(request.remote_addr)
-    if remote_ip != "127.0.0.1":
-        abort(403)
-
-
 VALID_SCRIPTS = [
     join(GEO_DATA_SCRIPTS_FOLDER, file)
     for file in listdir(GEO_DATA_SCRIPTS_FOLDER)
@@ -43,6 +32,16 @@ VALID_GEO_FILES = [
     if isfile(join(GEO_DATA_FOLDER, file))
     and (file.split(".")[-1] == "hdf5" or file.split(".")[-1] == "nc")
 ]
+
+app = Flask(__name__)
+CORS(app)
+
+
+@app.before_request
+def limit_remote_addr():
+    remote_ip = str(request.remote_addr)
+    if remote_ip != "127.0.0.1":
+        abort(403)
 
 
 class NumpyArrayEncoder(JSONEncoder):
@@ -75,13 +74,11 @@ def obtain_file_metadata(file_path):
     with open(file_path) as f:
         for line in f:
             if line.startswith("#"):
-                # Obtain the key value comment data
                 line = line.replace("#", "")
                 line = line.strip()
                 key, value = str(line).split(":")
                 metadata[key.strip()] = value.strip()
             else:
-                # Here you can proceed lines that are not comments
                 return metadata
     return metadata
 
@@ -91,13 +88,13 @@ def obtain_geoscripts():
     file_data = []
     for file in VALID_SCRIPTS:
         file_data.append({file: obtain_file_metadata(file)})
-    return json.dumps(file_data)
+    return json.dumps({"status": "success", "data": file_data})
 
 
 @app.route("/view_geofile_data", methods=["GET"])
 def obtain_geofile_data():
     if request.method == "GET":
-        return get_geofile_data(VALID_GEO_FILES[0])
+        return {"status": "success", "data": get_geofile_data(VALID_GEO_FILES[0])}
 
 
 @app.route("/send_netcdf", methods=["GET", "POST"])
@@ -116,9 +113,11 @@ def obtain_netcdf_data():
             filename = secure_filename(file.filename)
             file.save(join(UPLOAD_FOLDER, filename))
             return json.dumps(
-                {"status": "success", "message": "file successfully saved"}
+                {"status": "success", "data": {"message": "file successfully saved"}}
             )
-    return json.dumps({"status": "failed", "message": "file unsuccessfully saved"})
+    return json.dumps(
+        {"status": "failed", "data": {"message": "file unsuccessfully saved"}}
+    )
 
 
 @app.route("/run_script/<script>", methods=["POST"])
@@ -130,7 +129,9 @@ def run_geoscript():
                 print(filename)
                 # exec(file.read())
         else:
-            return json.dumps({"error": "invalid file passed in"})
+            return json.dumps(
+                {"status": "failed", "data": {"message": "invalid file passed in"}}
+            )
 
 
 # @app.route("/obtain_geo_file")
