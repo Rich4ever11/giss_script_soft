@@ -14,6 +14,12 @@ function ParseRaster(props) {
   console.log(layer);
   const map = useMap();
 
+  const handleMapClear = () => {
+    map.eachLayer(function (layer) {
+      if (layer?.sourceType === "ArrayBuffer") map.removeLayer(layer);
+    });
+  };
+
   // const bounds = [
   //   [-90, -180],
   //   [90, 180],
@@ -26,6 +32,8 @@ function ParseRaster(props) {
   // map.fitBounds(image.getBounds());
 
   useEffect(() => {
+    //clears previous geo data layer
+    handleMapClear();
     layer.addTo(map);
     map.setView([0, -70], 3);
     map.setMaxBounds([

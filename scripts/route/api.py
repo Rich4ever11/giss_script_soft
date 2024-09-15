@@ -198,7 +198,6 @@ def get_geotiff():
                 while len(data_arr.shape) > 2:
                     data_arr = data_arr[0]
 
-                print(data_arr)
                 height, width = data_arr.shape
                 # create a long and latitude numpy array
                 latitude_arr = np.linspace(-90, 90, height)
@@ -211,9 +210,6 @@ def get_geotiff():
             return Response(
                 byte_array,
                 mimetype="image/tiff",  # Set MIME type for text files
-            )
-            json.dumps(
-                {"status": "success", "data": {"message": "geotiff value saved"}}
             )
         else:
             return json.dumps(
