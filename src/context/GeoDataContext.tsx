@@ -18,6 +18,7 @@ export function GeoDataContext({ children }: { children: React.ReactNode }) {
 
   const value: any = {
     fileName,
+    netcdfData,
     setNetcdfData,
     setFileName,
   };

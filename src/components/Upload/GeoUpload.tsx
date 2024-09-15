@@ -17,7 +17,8 @@ import React from "react";
 import { useGeoData } from "../../context/GeoDataContext";
 
 function GeoUpload() {
-  const { fileName, setFileName } = useGeoData();
+  const { fileName, setFileName, setNetcdfData } = useGeoData();
+
   const handleGeoDataFunction = (event: any) => {
     const netcdfFile = event.target.files[0];
     var blobUrl = URL.createObjectURL(netcdfFile);
@@ -38,8 +39,8 @@ function GeoUpload() {
         const result = await res.json();
         if (result.status === "success") {
           setFileName(netcdfFile.name);
+          setNetcdfData(result.data.geo_data);
         }
-        console.log(result);
       })
       .catch((error) => {
         console.log("[-] Failed to upload file");

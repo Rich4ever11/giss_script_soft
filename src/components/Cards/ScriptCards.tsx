@@ -26,6 +26,12 @@ function ScriptCards() {
 
   const [scripts, setScripts] = useState<any>([]);
 
+  const checkScripts = () => {
+    return !(scripts.length < 1 || scripts == undefined);
+  };
+
+  console.log(scripts);
+
   useEffect(() => {
     fetch("http://127.0.0.1:5000/view_scripts", {})
       .then(async (res) => {
@@ -34,24 +40,31 @@ function ScriptCards() {
         console.log(result);
       })
       .catch((error) => {
-        console.log(`[-] Failed to obtain files file: ${error}`);
+        console.log(`[-] Failed to obtain files file`);
       });
   }, []);
 
   return (
     <>
       <Box backgroundColor={"blackAlpha.900"} paddingY={4}>
-        <Center>
-          <Box boxSize="sm">
-            <Image
-              borderColor={"black"}
-              borderWidth={4}
-              borderRadius={"lg"}
-              marginY={4}
-              src="https://images.unsplash.com/photo-1454789548928-9efd52dc4031?q=80&w=2680&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            />{" "}
-          </Box>
-        </Center>
+        {checkScripts() ? (
+          <></>
+        ) : (
+          <>
+            <Center>
+              <Box boxSize="sm">
+                <Image
+                  borderColor={"black"}
+                  borderWidth={4}
+                  borderRadius={"lg"}
+                  marginY={4}
+                  src="https://images.unsplash.com/photo-1454789548928-9efd52dc4031?q=80&w=2680&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                />{" "}
+              </Box>
+            </Center>
+          </>
+        )}
+
         <Box position="relative" padding={12}>
           <AbsoluteCenter px="4" rounded={"full"}>
             <Text
@@ -60,11 +73,11 @@ function ScriptCards() {
               textColor={"white"}
               padding={4}
             >
-              {!scripts ? "Python Scripts" : "No Scripts Available"}
+              {checkScripts() ? "Python Scripts" : "No Scripts Available"}
             </Text>
           </AbsoluteCenter>
         </Box>
-        {!scripts && (
+        {checkScripts() && (
           <>
             <Box position="relative" h="80px">
               <AbsoluteCenter color="white" axis="both">
