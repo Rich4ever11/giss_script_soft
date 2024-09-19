@@ -98,6 +98,7 @@ function Map() {
         <>
           <Select
             size={"lg"}
+            onInput={handleVarSelectionChange}
             onChange={handleVarSelectionChange}
             bg="black"
             color="white"
@@ -158,6 +159,7 @@ function Map() {
                 id="dropzone-file"
                 type="file"
                 className="hidden"
+                accept=".tif"
                 onChange={readFileDataAsBase64}
               />
             </label>

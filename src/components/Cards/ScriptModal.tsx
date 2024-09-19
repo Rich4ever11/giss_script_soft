@@ -6,61 +6,118 @@ import {
   ModalCloseButton,
   ModalBody,
   FormControl,
-  FormLabel,
-  Input,
+  Box,
   ModalFooter,
   Button,
-  Select,
+  SimpleGrid,
+  Text,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Stack,
 } from "@chakra-ui/react";
-import React from "react";
+import { useState } from "react";
 
 function ScriptModal(props: {
   isOpen: boolean;
+  filePath: string;
   onOpen: () => void;
   onClose: () => void;
 }) {
-  const { isOpen, onOpen, onClose } = props;
+  const [shapeHeight, setShapeHeight] = useState(90);
+  const [shapeWidth, setShapeWidth] = useState(144);
+  const { isOpen, onClose } = props;
 
-  const variables = [
-    "burned area",
-    "BA",
-    "emissions of CO2n",
-    "CO2n_emis_pyrE",
-    "CO2_GFED",
-    "lightning",
-    "Flashrate",
-    "C2G",
-  ];
+  const handleCodeExecution = () => {
+    const data = {
+      height: shapeHeight,
+      width: shapeWidth,
+      filePath: props.filePath,
+    };
+
+    fetch("http://127.0.0.1:5000/run_script", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    onClose();
+    console.log(data);
+  };
 
   return (
     <div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent bgColor={"black"}>
+        <ModalContent
+          bgColor={"black"}
+          border={"white"}
+          borderWidth={2}
+          borderStyle={"solid"}
+        >
           <ModalHeader textColor={"white"}>Input Parameters</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton color={"white"} />
           <ModalBody pb={6}>
             <FormControl>
-              <FormLabel textColor={"white"}>Geo Variable</FormLabel>
-              <select
-                id="countries"
-                className="bg-black border border-black text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-black dark:border-white dark:placeholder-black dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              >
-                <option selected>
-                  {(variables && "Select Geo Variable") || "No Geo Variables"}
-                </option>
-                {variables.map((variable, index) => (
-                  <option key={index} value={variable} color="black">
-                    {variable}
-                  </option>
-                ))}
-              </select>
+              <SimpleGrid columns={2}>
+                <Box>
+                  <Text color="white">Shape Height</Text>
+                </Box>
+                <Box>
+                  <Text color="white">Shape Height</Text>
+                </Box>
+              </SimpleGrid>
+              <Stack shouldWrapChildren direction="row">
+                <NumberInput
+                  size="lg"
+                  value={shapeHeight}
+                  maxW={48}
+                  defaultValue={15}
+                  min={10}
+                  textColor={"white"}
+                  onChange={(valueString) =>
+                    setShapeHeight(parseInt(valueString))
+                  }
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper color={"white"} />
+                    <NumberDecrementStepper color={"white"} />
+                  </NumberInputStepper>
+                </NumberInput>
+
+                <NumberInput
+                  size="lg"
+                  value={shapeWidth}
+                  maxW={48}
+                  defaultValue={15}
+                  min={10}
+                  textColor={"white"}
+                  onChange={(valueString) =>
+                    setShapeWidth(parseInt(valueString))
+                  }
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper color={"white"} />
+                    <NumberDecrementStepper color={"white"} />
+                  </NumberInputStepper>
+                </NumberInput>
+              </Stack>
             </FormControl>
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3}>
-              Save
+            <Button
+              colorScheme="green"
+              mr={3}
+              variant={"outline"}
+              onClick={handleCodeExecution}
+            >
+              Run Script
             </Button>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>

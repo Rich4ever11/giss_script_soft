@@ -11,6 +11,7 @@ import {
 import ScriptCard from "./ScriptCard";
 import { FaSearch } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { useGeoData } from "../../context/GeoDataContext";
 
 function ScriptCards() {
   // const scriptLists = [
@@ -25,6 +26,7 @@ function ScriptCards() {
   // ];
 
   const [scripts, setScripts] = useState<any>([]);
+  const { fileName } = useGeoData();
 
   const checkScripts = () => {
     return !(scripts.length < 1 || scripts == undefined);
@@ -47,7 +49,7 @@ function ScriptCards() {
   return (
     <>
       <Box backgroundColor={"blackAlpha.900"} paddingY={4}>
-        {checkScripts() ? (
+        {checkScripts() && fileName ? (
           <></>
         ) : (
           <>
@@ -73,11 +75,15 @@ function ScriptCards() {
               textColor={"white"}
               padding={4}
             >
-              {checkScripts() ? "Python Scripts" : "No Scripts Available"}
+              {checkScripts() && fileName
+                ? "Python Scripts"
+                : !fileName
+                ? "Please Upload File"
+                : "No Scripts Available"}
             </Text>
           </AbsoluteCenter>
         </Box>
-        {checkScripts() && (
+        {checkScripts() && fileName && (
           <>
             <Box position="relative" h="80px">
               <AbsoluteCenter color="white" axis="both">
@@ -103,6 +109,7 @@ function ScriptCards() {
                       file_name={script[key].Title}
                       author={script[key].Author}
                       description={script[key].Description}
+                      path={script[key].path}
                       libraries={""}
                       snippets={""}
                     ></ScriptCard>

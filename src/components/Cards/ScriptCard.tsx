@@ -23,9 +23,10 @@ function ScriptCard(props: {
   description: any;
   libraries: any;
   snippets: any;
+  path: string;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { file_name, author, description, libraries, snippets } = props;
+  const { file_name, author, description, path, libraries, snippets } = props;
 
   return (
     <>
@@ -75,7 +76,12 @@ function ScriptCard(props: {
         </CardFooter>
       </Card>
 
-      <ScriptModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+      <ScriptModal
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
+        filePath={path}
+      />
     </>
   );
 }
