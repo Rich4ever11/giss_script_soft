@@ -14,6 +14,7 @@ import json
 from flask import request, abort
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
+from subprocess import call
 
 
 ALLOWED_EXTENSIONS = {"nc"}
@@ -67,6 +68,7 @@ def get_geofile_data(file_path):
 
 def obtain_file_metadata(file_path):
     metadata = {}
+    metadata["path"] = file_path
     with open(file_path) as f:
         for line in f:
             if line.startswith("#"):
@@ -175,15 +177,32 @@ def obtain_netcdf_data():
 @app.route("/run_script", methods=["POST"])
 def run_geoscript():
     if request.method == "POST":
-        filename = request.form.get("filename")
-        if filename in VALID_SCRIPTS:
-            with open(filename) as file:
-                print(filename)
+        json_data = request.json
+        print(json_data)
+        shape_height = json_data["height"]
+        shape_width = json_data["width"]
+        filePath = json_data["filePath"]
+        if filePath in VALID_SCRIPTS:
+            with open(filePath) as file:
+                print(filePath, shape_height, shape_width)
+                call(
+                    [
+                        "python",
+                        filePath,
+                        GEO_DATA_FOLDER,
+                        str(shape_height),
+                        str(shape_width),
+                    ]
+                )
+                # os.remove(CURRENT_GEOTIF_FILEPATH)
+                return json.dumps(
+                    {"status": "success", "data": {"message": "script ran"}}
+                )
+                pass
                 # exec(file.read())
-        else:
-            return json.dumps(
-                {"status": "failed", "data": {"message": "invalid file passed in"}}
-            )
+        return json.dumps(
+            {"status": "failed", "data": {"message": "invalid file passed in"}}
+        )
 
 
 @app.route("/get_geotiff", methods=["POST"])
@@ -195,6 +214,7 @@ def get_geotiff():
         if variable_name:
             with Dataset(CURRENT_NETCDF_FILEPATH) as netcdf_dataset:
                 data_arr = netcdf_dataset.variables[variable_name][:]
+                print(netcdf_dataset.variables.keys())
                 while len(data_arr.shape) > 2:
                     data_arr = data_arr[0]
 
