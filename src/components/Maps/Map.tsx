@@ -1,8 +1,17 @@
 import { LatLngExpression } from "leaflet";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MapContainer, useMap, TileLayer, Marker, Popup } from "react-leaflet";
 import ParseRaster from "./ParseRaster";
-import { Card, CardBody, Input, Select, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  Grid,
+  Input,
+  Select,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { useGeoData } from "../../context/GeoDataContext";
 
 import GeoRasterLayer from "georaster-layer-for-leaflet";
@@ -12,17 +21,20 @@ const { Buffer } = require("buffer");
 
 function Map() {
   const [layer, setLayer] = useState<any>(null);
+  const [clearMap, setClearMap] = useState<any>(false);
   const { fileName, netcdfData } = useGeoData();
 
   useEffect(() => {
+    console.log(fileName);
     if (fileName) {
-      console.log(fileName);
-      console.log(netcdfData.variables);
+      if (netcdfData.variables) {
+        const initVarName = netcdfData.variables[0].name;
+        handleVarSelectionChange(initVarName);
+      }
     }
   }, [fileName]);
 
-  const handleVarSelectionChange = (event: any) => {
-    const varName = event.target.value;
+  const handleVarSelectionChange = (varName: string) => {
     if (varName) {
       fetch("http://127.0.0.1:5000/get_geotiff", {
         method: "POST",
@@ -35,14 +47,6 @@ function Map() {
           const value = await res.arrayBuffer();
           console.log(value);
           parse_georaster(value).then((georaster: any) => {
-            /*
-                  GeoRasterLayer is an extension of GridLayer,
-                  which means can use GridLayer options like opacity.
-                  Just make sure to include the georaster option!
-                  Optionally set the pixelValuesToColorFn function option to customize
-                  how values for a pixel are translated to a color.
-                  https://leafletjs.com/reference.html#gridlayer
-              */
             console.log(georaster);
             var new_layer = new GeoRasterLayer({
               georaster: georaster,
@@ -64,20 +68,11 @@ function Map() {
 
   function readFileDataAsBase64(e: any) {
     const file = e.target.files[0];
-
     var reader = new FileReader();
     reader.readAsArrayBuffer(file);
     reader.onloadend = async function () {
       const arrayBuffer = reader.result;
       parse_georaster(arrayBuffer).then((georaster: any) => {
-        /*
-              GeoRasterLayer is an extension of GridLayer,
-              which means can use GridLayer options like opacity.
-              Just make sure to include the georaster option!
-              Optionally set the pixelValuesToColorFn function option to customize
-              how values for a pixel are translated to a color.
-              https://leafletjs.com/reference.html#gridlayer
-          */
         console.log(georaster);
         var new_layer = new GeoRasterLayer({
           georaster: georaster,
@@ -92,14 +87,32 @@ function Map() {
     };
   }
 
+  const clearMapCode = () => {
+    return (
+      <Stack direction="row" spacing={4} align="center" py={2}>
+        <Button
+          backgroundColor={"black"}
+          color={"white"}
+          variant="outline"
+          size="lg"
+          onClick={() => setClearMap(!clearMap)}
+        >
+          Clear Map
+        </Button>
+      </Stack>
+    );
+  };
+
   return (
     <>
       {fileName ? (
         <>
+          <Grid justifyContent={"center"} backgroundColor={"blackAlpha.900"}>
+            {clearMapCode()}
+          </Grid>
           <Select
             size={"lg"}
-            onInput={handleVarSelectionChange}
-            onChange={handleVarSelectionChange}
+            onChange={(event) => handleVarSelectionChange(event.target.value)}
             bg="black"
             color="white"
           >
@@ -132,6 +145,8 @@ function Map() {
               Upload GeoTiff Data
             </Text>
           </CardBody>
+          {clearMapCode()}
+
           <div className="flex items-center justify-center w-full">
             <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-black border-dashed rounded-lg cursor-pointer bg-black dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -176,7 +191,7 @@ function Map() {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {layer && <ParseRaster layer={layer} />}
+        {layer && <ParseRaster layer={layer} mapClearTrigger={clearMap} />}
       </MapContainer>
     </>
   );

@@ -10,8 +10,7 @@ import L from "leaflet";
 var parse_georaster = require("georaster");
 
 function ParseRaster(props) {
-  const { layer } = props;
-  console.log(layer);
+  const { layer, mapClearTrigger } = props;
   const map = useMap();
 
   const handleMapClear = () => {
@@ -19,17 +18,6 @@ function ParseRaster(props) {
       if (layer?.sourceType === "ArrayBuffer") map.removeLayer(layer);
     });
   };
-
-  // const bounds = [
-  //   [-90, -180],
-  //   [90, 180],
-  // ];
-  // const image = L.imageOverlay(
-  //   "https://i.imgur.com/Ion6X7C.jpg",
-  //   bounds as LatLngBoundsExpression,
-  //   { opacity: 0.1 }
-  // ).addTo(map);
-  // map.fitBounds(image.getBounds());
 
   useEffect(() => {
     //clears previous geo data layer
@@ -40,9 +28,17 @@ function ParseRaster(props) {
       [-90, -180],
       [90, 180],
     ]);
+  }, [layer, mapClearTrigger]);
 
-    // map.fitBounds(layer.getBounds());
-  }, [layer]);
+  useEffect(() => {
+    //clears previous geo data layer
+    handleMapClear();
+    map.setView([0, -70], 3);
+    map.setMaxBounds([
+      [-90, -180],
+      [90, 180],
+    ]);
+  }, [mapClearTrigger]);
 
   return <div></div>;
 }

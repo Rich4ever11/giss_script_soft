@@ -1,19 +1,4 @@
-import {
-  Box,
-  Divider,
-  AbsoluteCenter,
-  Text,
-  Center,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Heading,
-} from "@chakra-ui/react";
-import { FaCloudUploadAlt } from "react-icons/fa";
-import { FaGlobeAmericas } from "react-icons/fa";
-import React from "react";
+import { Text, Button, Card, CardBody, Stack } from "@chakra-ui/react";
 import { useGeoData } from "../../context/GeoDataContext";
 
 function GeoUpload() {
@@ -48,13 +33,18 @@ function GeoUpload() {
     // console.log(blobUrl);
   };
 
+  const handleClearNetcdfFile = () => {
+    setFileName("");
+    setNetcdfData({});
+  };
+
   return (
     <>
       <Card
         align="center"
-        backgroundColor={"blue.900"}
+        backgroundColor={"black"}
         color={"black"}
-        bgGradient="linear(black 0%, black 5%, blue.900 50%)"
+        bgGradient="linear(black 0%, black 5%, blue.900 80%)"
         rounded={"none"}
       >
         <CardBody>
@@ -97,6 +87,19 @@ function GeoUpload() {
           </div>
         ) : (
           <></>
+        )}
+
+        {fileName && (
+          <Stack direction="row" spacing={4} align="center" pb={4}>
+            <Button
+              backgroundColor={"black"}
+              color={"white"}
+              variant="solid"
+              onClick={handleClearNetcdfFile}
+            >
+              Clear NETCDF File
+            </Button>
+          </Stack>
         )}
       </Card>
     </>

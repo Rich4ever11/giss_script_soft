@@ -150,16 +150,16 @@ def obtain_netcdf_data():
     if request.method == "POST":
         files_dict = request.files.to_dict()
         # check if the post request has the file part
-        if "file" not in files_dict:
-            print("No file part")
+        # if "file" not in files_dict:
+        #     print("No file part")
         file = files_dict["files"]
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == "":
             print("No selected file")
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
             file.save(CURRENT_NETCDF_FILEPATH)
+            file.close()
             return json.dumps(
                 {
                     "status": "success",
@@ -211,13 +211,13 @@ def get_geotiff():
         data = request.get_json()
         variable_name = data["variable_name"]
         print(variable_name)
-        if variable_name:
-            with Dataset(CURRENT_NETCDF_FILEPATH) as netcdf_dataset:
+        with Dataset(CURRENT_NETCDF_FILEPATH) as netcdf_dataset:
+            if variable_name in netcdf_dataset.variables.keys():
                 data_arr = netcdf_dataset.variables[variable_name][:]
-                print(netcdf_dataset.variables.keys())
                 while len(data_arr.shape) > 2:
                     data_arr = data_arr[0]
 
+                # data_arr[data_arr.mask] = 0
                 height, width = data_arr.shape
                 # create a long and latitude numpy array
                 latitude_arr = np.linspace(-90, 90, height)
@@ -225,16 +225,20 @@ def get_geotiff():
                 create_geotiff_file(
                     data_arr, latitude_arr, longitude_arr, CURRENT_GEOTIF_FILEPATH
                 )
-            file = open(CURRENT_GEOTIF_FILEPATH, "rb")
-            byte_array = file.read()
-            return Response(
-                byte_array,
-                mimetype="image/tiff",  # Set MIME type for text files
-            )
-        else:
-            return json.dumps(
-                {"status": "failed", "data": {"message": "failed to create geotiff"}}
-            )
+                file = open(CURRENT_GEOTIF_FILEPATH, "rb")
+                byte_array = file.read()
+                file.close()
+                return Response(
+                    byte_array,
+                    mimetype="image/tiff",  # Set MIME type for text files
+                )
+            else:
+                return json.dumps(
+                    {
+                        "status": "failed",
+                        "data": {"message": "failed to create geotiff"},
+                    }
+                )
         return json.dumps(
             {"status": "failed", "data": {"message": "failed to create geotiff"}}
         )
