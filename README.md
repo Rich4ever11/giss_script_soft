@@ -16,10 +16,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 7.) Currently fixing errors for script execution (file works but errors whenever access to the geotiff is initiated more than once)
 
-Prototype Demo: https://drive.google.com/file/d/1avPWj7Tf7vnZ-Sdp3eDvItxE3DljsH0G/view?usp=sharing
-
 Note: this could be due to windows access the running file and examining it
 Fixed errors and other issues (Demo coming next week)
+
+Prototype Demo: https://drive.google.com/file/d/1avPWj7Tf7vnZ-Sdp3eDvItxE3DljsH0G/view?usp=sharing
 
 
 ## Available Scripts
