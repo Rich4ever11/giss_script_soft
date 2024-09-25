@@ -41,13 +41,6 @@ VALID_GEO_FILES = [
 ]
 
 
-class NumpyArrayEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        return JSONEncoder.default(self, obj)
-
-
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -111,9 +104,10 @@ def create_geotiff_file(data_arr, latitude_arr, longitude_arr, geotiff_file_path
         "transform": transform,
     }
 
+    data_arr[data_arr.mask] = 0
     # Create a new GeoTIFF file using the crafted path and add the data to the file
     with rasterio.open(geotiff_file_path, "w", **metadata) as dst:
-        data_arr = np.flip(data_arr, 0)
+        # data_arr = np.flip(data_arr, 0)
         dst.write(data_arr, 1)
     # return the GeoTIFF file path
     return geotiff_file_path
@@ -177,32 +171,37 @@ def obtain_netcdf_data():
 @app.route("/run_script", methods=["POST"])
 def run_geoscript():
     if request.method == "POST":
-        json_data = request.json
-        print(json_data)
-        shape_height = json_data["height"]
-        shape_width = json_data["width"]
-        filePath = json_data["filePath"]
-        if filePath in VALID_SCRIPTS:
-            with open(filePath) as file:
-                print(filePath, shape_height, shape_width)
-                call(
-                    [
-                        "python",
-                        filePath,
-                        GEO_DATA_FOLDER,
-                        str(shape_height),
-                        str(shape_width),
-                    ]
-                )
-                # os.remove(CURRENT_GEOTIF_FILEPATH)
-                return json.dumps(
-                    {"status": "success", "data": {"message": "script ran"}}
-                )
-                pass
-                # exec(file.read())
-        return json.dumps(
-            {"status": "failed", "data": {"message": "invalid file passed in"}}
-        )
+        try:
+            json_data = request.json
+            shape_height = json_data["height"]
+            shape_width = json_data["width"]
+            filePath = json_data["filePath"]
+            if filePath in VALID_SCRIPTS:
+                with open(filePath) as file:
+                    print(filePath, shape_height, shape_width)
+                    call(
+                        [
+                            "python",
+                            filePath,
+                            GEO_DATA_FOLDER,
+                            str(shape_height),
+                            str(shape_width),
+                        ]
+                    )
+                    # os.remove(CURRENT_GEOTIF_FILEPATH)
+                    return json.dumps(
+                        {"status": "success", "data": {"message": "script ran"}}
+                    )
+            return json.dumps(
+                {"status": "failed", "data": {"message": "invalid file passed in"}}
+            )
+        except:
+            return json.dumps(
+                {
+                    "status": "failed",
+                    "data": {"message": "failed to run script (try a different file)"},
+                }
+            )
 
 
 @app.route("/get_geotiff", methods=["POST"])
@@ -210,12 +209,21 @@ def get_geotiff():
     if request.method == "POST":
         data = request.get_json()
         variable_name = data["variable_name"]
+        time = int(data["time"])
         print(variable_name)
         with Dataset(CURRENT_NETCDF_FILEPATH) as netcdf_dataset:
             if variable_name in netcdf_dataset.variables.keys():
                 data_arr = netcdf_dataset.variables[variable_name][:]
-                while len(data_arr.shape) > 2:
-                    data_arr = data_arr[0]
+                if len(data_arr.shape) == 3:
+                    if time >= 1 and time <= int(data_arr.shape[0]):
+                        data_arr = data_arr[time - 1]
+                    else:
+                        data_arr = data_arr[0]
+                else:
+                    while len(data_arr.shape) > 2:
+                        data_arr = data_arr[0]
+
+                print(data_arr)
 
                 # data_arr[data_arr.mask] = 0
                 height, width = data_arr.shape
@@ -244,6 +252,5 @@ def get_geotiff():
         )
 
 
-# @app.route("/obtain_geo_file")
-# def obtain_geodata():
-#     return json.dumps(VALID_GEO_FILES)
+if __name__ == "__main__":
+    app.run()

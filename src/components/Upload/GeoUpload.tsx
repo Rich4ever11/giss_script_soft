@@ -81,7 +81,7 @@ function GeoUpload() {
                 type="file"
                 className="hidden"
                 onChange={handleGeoDataFunction}
-                accept=".nc"
+                accept=".nc,.hdf5"
               />
             </label>
           </div>

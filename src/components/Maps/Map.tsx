@@ -7,7 +7,13 @@ import {
   Card,
   CardBody,
   Grid,
+  HStack,
   Input,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Select,
   Stack,
   Text,
@@ -17,11 +23,12 @@ import { useGeoData } from "../../context/GeoDataContext";
 import GeoRasterLayer from "georaster-layer-for-leaflet";
 var parse_georaster = require("georaster");
 const { Buffer } = require("buffer");
-// var writeFile = require("fs");
 
 function Map() {
   const [layer, setLayer] = useState<any>(null);
   const [clearMap, setClearMap] = useState<any>(false);
+  const [timeSeries, setTimeSeries] = useState(1);
+  const [variableName, setVariableName] = useState("");
   const { fileName, netcdfData } = useGeoData();
 
   useEffect(() => {
@@ -29,18 +36,34 @@ function Map() {
     if (fileName) {
       if (netcdfData.variables) {
         const initVarName = netcdfData.variables[0].name;
-        handleVarSelectionChange(initVarName);
+        setVariableName(initVarName);
+        handleMapUpdate(initVarName, 1);
       }
     }
   }, [fileName]);
 
-  const handleVarSelectionChange = (varName: string) => {
+  const handleVariableUpdate = (varName: string) => {
+    setVariableName(varName);
+    const value = netcdfData.variables.filter((ncVariable: any) => {
+      return ncVariable.name === varName;
+    });
+    if (value[0].dimensions.length === 3) {
+      setTimeSeries(value[0].dimensions[0]);
+    }
+    console.log(timeSeries);
+    handleMapUpdate(varName, 1);
+  };
+
+  console.log(timeSeries);
+
+  const handleMapUpdate = (varName: string, varTime: number) => {
     if (varName) {
       fetch("http://127.0.0.1:5000/get_geotiff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           variable_name: varName,
+          time: varTime,
         }),
       })
         .then(async (res) => {
@@ -52,7 +75,7 @@ function Map() {
               georaster: georaster,
               opacity: 0.5,
               pixelValuesToColorFn: function (values) {
-                return `rgb(${10 * values[0]}, 0, 0)`;
+                return `rgb(${1 * values[0]}, 0, 0)`;
               },
               resolution: 64,
             });
@@ -78,7 +101,7 @@ function Map() {
           georaster: georaster,
           opacity: 0.5,
           pixelValuesToColorFn: function (values) {
-            return `rgb(${10 * values[0]}, 0, 0)`;
+            return `rgb(${1 * values[0]}, 0, 0)`;
           },
           resolution: 64,
         });
@@ -107,30 +130,56 @@ function Map() {
     <>
       {fileName ? (
         <>
-          <Grid justifyContent={"center"} backgroundColor={"blackAlpha.900"}>
-            {clearMapCode()}
-          </Grid>
-          <Select
-            size={"lg"}
-            onChange={(event) => handleVarSelectionChange(event.target.value)}
-            bg="black"
-            color="white"
-          >
-            {netcdfData.variables.map(
-              (
-                variable: { name: string; dimensions: number[] },
-                index: number
-              ) => (
-                <option
-                  value={variable.name}
-                  key={index}
-                  style={{ color: "black", backgroundColor: "black" }}
-                >
-                  {variable.name}
-                </option>
-              )
-            )}
-          </Select>
+          <div className="p-4 bg-black">
+            <Grid justifyContent={"center"} backgroundColor={"blackAlpha.900"}>
+              {clearMapCode()}
+            </Grid>
+            <Select
+              size={"lg"}
+              onChange={(event) => handleVariableUpdate(event.target.value)}
+              bg="black"
+              color="white"
+            >
+              {netcdfData.variables.map(
+                (
+                  variable: { name: string; dimensions: number[] },
+                  index: number
+                ) => (
+                  <option
+                    value={variable.name}
+                    key={index}
+                    style={{ color: "black", backgroundColor: "black" }}
+                  >
+                    {variable.name}
+                  </option>
+                )
+              )}
+            </Select>
+            <HStack className="flex justify-center py-2 bg-black">
+              <p className="text-lg text-white">Time Series</p>
+              <NumberInput
+                size="md"
+                maxW={48}
+                defaultValue={1}
+                min={1}
+                textColor={"white"}
+                onChange={(numberVal) => setTimeSeries(parseInt(numberVal))}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper color={"white"} />
+                  <NumberDecrementStepper color={"white"} />
+                </NumberInputStepper>
+              </NumberInput>
+              <Button
+                color={"white"}
+                variant="outline"
+                onClick={() => handleMapUpdate(variableName, timeSeries)}
+              >
+                Update Map
+              </Button>
+            </HStack>
+          </div>
         </>
       ) : (
         <Card
