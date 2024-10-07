@@ -101,10 +101,10 @@ function ScriptCards() {
               </AbsoluteCenter>
             </Box>
 
-            <div className="flex overflow-x-auto p-2">
+            <div className="p-2">
               {scripts.map((script: any) =>
                 Object.keys(script).map((key, index: number) => (
-                  <div key={index}>
+                  <div key={index} className="max-w-full">
                     <ScriptCard
                       file_name={script[key].Title}
                       author={script[key].Author}

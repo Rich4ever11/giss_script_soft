@@ -31,11 +31,12 @@ function ScriptCard(props: {
   return (
     <>
       <Card
-        width={"35vh"}
+        width={"100%"}
         marginX={4}
         backgroundColor={"gray.900"}
         borderWidth={3}
         borderColor={"white"}
+        maxW={"max-content"}
       >
         <CardHeader>
           <VStack>

@@ -17,6 +17,7 @@ import {
   NumberInputField,
   NumberInputStepper,
   Stack,
+  Input,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -28,6 +29,7 @@ function ScriptModal(props: {
 }) {
   const [shapeHeight, setShapeHeight] = useState(90);
   const [shapeWidth, setShapeWidth] = useState(144);
+  const [variableName, setVariableName] = useState<string>("");
   const { isOpen, onClose } = props;
 
   const handleCodeExecution = () => {
@@ -35,6 +37,7 @@ function ScriptModal(props: {
       height: shapeHeight,
       width: shapeWidth,
       filePath: props.filePath,
+      variableName: variableName,
     };
 
     fetch("http://127.0.0.1:5000/run_script", {
@@ -62,7 +65,15 @@ function ScriptModal(props: {
           <ModalCloseButton color={"white"} />
           <ModalBody pb={6}>
             <FormControl>
-              <SimpleGrid columns={2}>
+              <Box className="pb-2">
+                <Text color="white">Variable Name</Text>
+              </Box>
+              <Input
+                placeholder="Enter Variable Name"
+                className="mb-2 text-white"
+                onChange={(event) => setVariableName(event.target.value)}
+              ></Input>
+              <SimpleGrid columns={2} className="pt-4 pb-2">
                 <Box>
                   <Text color="white">Shape Height</Text>
                 </Box>

@@ -174,6 +174,7 @@ def run_geoscript():
         try:
             json_data = request.json
             shape_height = json_data["height"]
+            variable_name = json_data["variableName"]
             shape_width = json_data["width"]
             filePath = json_data["filePath"]
             if filePath in VALID_SCRIPTS:
@@ -186,6 +187,7 @@ def run_geoscript():
                             GEO_DATA_FOLDER,
                             str(shape_height),
                             str(shape_width),
+                            str(variable_name),
                         ]
                     )
                     # os.remove(CURRENT_GEOTIF_FILEPATH)
