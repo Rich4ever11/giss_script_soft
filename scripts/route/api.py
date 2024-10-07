@@ -107,7 +107,7 @@ def create_geotiff_file(data_arr, latitude_arr, longitude_arr, geotiff_file_path
     data_arr[data_arr.mask] = 0
     # Create a new GeoTIFF file using the crafted path and add the data to the file
     with rasterio.open(geotiff_file_path, "w", **metadata) as dst:
-        # data_arr = np.flip(data_arr, 0)
+        data_arr = np.flip(data_arr, 0)
         dst.write(data_arr, 1)
     # return the GeoTIFF file path
     return geotiff_file_path

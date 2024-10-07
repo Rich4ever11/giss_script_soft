@@ -1,9 +1,12 @@
 from os import listdir
 from os.path import join, isfile
 from subprocess import call, run
+import subprocess
 
-FLASK_API_PATH = "./scripts/route/api"
+FLASK_API_PATH = "api.py"
 FLASK_API_DIR = "./scripts/route/"
+
+NPM_START_DIR = "."
 
 
 def startReactFrontend():
@@ -18,17 +21,17 @@ def startReactFrontend():
     #         "[-] The node modules have not been installed %d"
     #         % installation_status.returncode
     #     )
-    try:
-        call(["npm", "run", "start"])
-    except:
-        print("[-] Failed to start the server")
+    # npm_package_install_result = subprocess.Popen("npm install", shell=True)
+    # print(npm_package_install_result)
+    npm_run_result = subprocess.Popen("npm run start", shell=True)
+    print(npm_run_result)
 
 
 def startFlaskServer():
     # try:
     # flask --app nmapScanner.py run
     # run(f"export FLASK_APP={FLASK_API_PATH}")
-    result = run(f"python {FLASK_API_PATH}", cwd=FLASK_API_DIR)
+    result = subprocess.Popen(f"python {FLASK_API_PATH}", cwd=FLASK_API_DIR)
     print(result.args)
 
 
