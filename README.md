@@ -2,6 +2,31 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+1.) Created the initial webpage/software for the program managing various scripts (In progress) - Current Functionality
+
+2.) Ability to Upload Geotiff files and have it display on a map (leaflet)
+
+3.) UI elements for searching and viewing available scripts
+
+4.) Ability to Upload Netcdf files
+
+5.) Added the ability to clear map layer (both online and offline)
+
+6.) Added the ability to clear the file and allow for another upload of different files (w/o refreshing the webpage)
+
+7.) Currently fixing errors for script execution (file works but errors whenever access to the geotiff is initiated more than once)
+
+Note: this could be due to windows access the running file and examining it
+Fixed errors and other issues (Demo coming next week)
+
+Prototype Demo: https://drive.google.com/file/d/1avPWj7Tf7vnZ-Sdp3eDvItxE3DljsH0G/view?usp=sharing
+Gifs:
+![ezgif-3-fa4cb0fcdf](https://github.com/user-attachments/assets/a15ac458-c283-4a07-922e-3c09f0dd4b77)
+
+![ezgif-3-25120e36bf](https://github.com/user-attachments/assets/d4d48fa0-b7f4-44c5-9d05-77f5f9d60464)
+
+
+
 ## Available Scripts
 
 In the project directory, you can run:
