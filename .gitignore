@@ -22,5 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/scripts/geo_scripts
+/scripts/geo_scripts/geo_data
 /scripts/route/__pycache__

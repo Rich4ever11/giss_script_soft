@@ -13,8 +13,9 @@ import {
   Avatar,
   Divider,
   VStack,
+  Box,
 } from "@chakra-ui/react";
-import ScriptModal from "./ScriptModal";
+import ResampleScriptModal from "./ResampleScriptModal";
 import { FaRocket } from "react-icons/fa6";
 
 function ScriptCard(props: {
@@ -23,20 +24,44 @@ function ScriptCard(props: {
   description: any;
   libraries: any;
   snippets: any;
+  modalType: any;
   path: string;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { file_name, author, description, path, libraries, snippets } = props;
+  const {
+    modalType,
+    file_name,
+    author,
+    description,
+    path,
+    libraries,
+    snippets,
+  } = props;
+
+  const handleModalType = () => {
+    switch (modalType) {
+      case "resample":
+        return (
+          <ResampleScriptModal
+            isOpen={isOpen}
+            onOpen={onOpen}
+            onClose={onClose}
+            filePath={path}
+          />
+        );
+      default:
+        return <></>;
+    }
+  };
 
   return (
     <>
       <Card
         width={"100%"}
-        marginX={4}
         backgroundColor={"gray.900"}
-        borderWidth={3}
         borderColor={"white"}
         maxW={"max-content"}
+        borderWidth={2}
       >
         <CardHeader>
           <VStack>
@@ -49,15 +74,22 @@ function ScriptCard(props: {
               name="Segun Adebayo"
               src="https://images.unsplash.com/photo-1541873676-a18131494184?q=80&w=2636&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />{" "}
-            <Heading className="font-thin" size="xl" textColor={"white"}>
+            <Heading
+              className="font-thin"
+              size="2xl"
+              textColor={"white"}
+              fontWeight={200}
+            >
               {file_name}
             </Heading>
-            <Text size="lg" textColor={"white"}>
+            <Text fontSize="xl" textColor={"white"} fontWeight={400}>
               {author}
             </Text>
           </VStack>
         </CardHeader>
-        <Divider orientation="horizontal" color={"white"} />{" "}
+        <div className="flex justify-center">
+          <Divider orientation="horizontal" color={"white"} width={96} />{" "}
+        </div>
         <CardBody>
           <Text textColor={"white"}>{description}</Text>
         </CardBody>
@@ -74,15 +106,10 @@ function ScriptCard(props: {
             <FaRocket className="mr-3" />
             Run Script
           </Button>
+
+          {handleModalType()}
         </CardFooter>
       </Card>
-
-      <ScriptModal
-        isOpen={isOpen}
-        onOpen={onOpen}
-        onClose={onClose}
-        filePath={path}
-      />
     </>
   );
 }

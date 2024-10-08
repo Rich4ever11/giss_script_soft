@@ -14,41 +14,29 @@ import { useEffect, useState } from "react";
 import { useGeoData } from "../../context/GeoDataContext";
 
 function ScriptCards() {
-  // const scriptLists = [
-  //   {
-  //     file_name: "Upscale GFED5 Data",
-  //     author: "Richard Aja",
-  //     description:
-  //       "Preforms an upscale of the GFED5 data sample. Preforming an upscale of 720x1440 to 90x144",
-  //     libraries: ["xarray", "netcdf", "matplotlib", "os"],
-  //     snippets: "",
-  //   },
-  // ];
+  const scriptLists = [
+    {
+      file_name: "Netcdf Resampler",
+      author: "Richard Aja",
+      description:
+        "Preforms an upscale on any netcdf dataset. This requires an input of the variable name that you wish to resample and the new shape",
+      libraries: ["xarray", "netcdf", "matplotlib", "os"],
+      snippets: "",
+      path: "../geo_scripts\\resampler.py",
+      modalType: "resample",
+    },
+  ];
 
-  const [scripts, setScripts] = useState<any>([]);
+  // const [scripts, setScripts] = useState<any>([]);
   const { fileName } = useGeoData();
 
   const checkScripts = () => {
-    return !(scripts.length < 1 || scripts == undefined);
+    return !(scriptLists.length < 1 || scriptLists == undefined);
   };
-
-  console.log(scripts);
-
-  useEffect(() => {
-    fetch("http://127.0.0.1:5000/view_scripts", {})
-      .then(async (res) => {
-        const result = await res.json();
-        setScripts(result.data);
-        console.log(result);
-      })
-      .catch((error) => {
-        console.log(`[-] Failed to obtain files file`);
-      });
-  }, []);
 
   return (
     <>
-      <Box backgroundColor={"blackAlpha.900"} paddingY={4}>
+      <Box backgroundColor={"blackAlpha.900"} paddingY={24} marginY={0.5}>
         {checkScripts() && fileName ? (
           <></>
         ) : (
@@ -71,7 +59,7 @@ function ScriptCards() {
           <AbsoluteCenter px="4" rounded={"full"}>
             <Text
               className="font-thin "
-              fontSize="4xl"
+              fontSize="6xl"
               textColor={"white"}
               padding={4}
             >
@@ -101,20 +89,35 @@ function ScriptCards() {
               </AbsoluteCenter>
             </Box>
 
-            <div className="p-2">
-              {scripts.map((script: any) =>
-                Object.keys(script).map((key, index: number) => (
-                  <div key={index} className="max-w-full">
+            <div className="py-2">
+              {scriptLists.map(
+                (
+                  script: {
+                    file_name: string;
+                    author: string;
+                    description: string;
+                    libraries: string[];
+                    snippets: string;
+                    path: string;
+                    modalType: string;
+                  },
+                  index: number
+                ) => (
+                  <div
+                    key={index}
+                    className="flex justify-center max-w-full py-2"
+                  >
                     <ScriptCard
-                      file_name={script[key].Title}
-                      author={script[key].Author}
-                      description={script[key].Description}
-                      path={script[key].path}
+                      file_name={script.file_name}
+                      author={script.author}
+                      description={script.description}
+                      path={script.path}
                       libraries={""}
                       snippets={""}
+                      modalType={script.modalType}
                     ></ScriptCard>
                   </div>
-                ))
+                )
               )}
             </div>
           </>
