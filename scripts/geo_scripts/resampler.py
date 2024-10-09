@@ -164,7 +164,7 @@ class Resampler:
         """
         try:
             # create the new file's path & name
-            new_file_name = self.obtain_new_filename(file_path)
+            # new_file_name = self.obtain_new_filename(file_path)
             # checks if the save folder path exists (if it does not a folder is created)
             if not exists(self.save_folder_path):
                 makedirs(self.save_folder_path)
@@ -240,6 +240,7 @@ class Resampler:
                 netcdf_dataset = xarray.open_dataset(file)
                 # dataset containing all xarray data array (used to create the final netcdf file)
                 dataset_dict = {}
+                # dataset_dict = netcdf_dataset.to_dict(data="list", encoding=True)
 
                 # obtain the variables in the netcdf_dataset
                 # dimensions (1, 720, 1440)
