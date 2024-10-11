@@ -32,7 +32,7 @@ function ScriptModal(props: {
   const [variableName, setVariableName] = useState<string>("");
   const { isOpen, onClose } = props;
 
-  const handleCodeExecution = () => {
+  const handleCodeExecution = async () => {
     const data = {
       height: shapeHeight,
       width: shapeWidth,
@@ -40,15 +40,18 @@ function ScriptModal(props: {
       variableName: variableName,
     };
 
-    fetch("http://127.0.0.1:5000/run_script", {
+    const result = await fetch("http://127.0.0.1:5000/run_script", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-    onClose();
-    console.log(data);
+
+    const value = await result.arrayBuffer();
+    const blob = new Blob([value], { type: "application/netcdf" });
+    const url = URL.createObjectURL(blob);
+    const window_val = window.open(url, "value");
   };
 
   return (

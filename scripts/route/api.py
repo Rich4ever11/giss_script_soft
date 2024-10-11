@@ -191,6 +191,13 @@ def run_geoscript():
                         ]
                     )
                     # os.remove(CURRENT_GEOTIF_FILEPATH)
+                    file = open(CURRENT_NETCDF_FILEPATH, "rb")
+                    byte_array = file.read()
+                    file.close()
+                    return Response(
+                        byte_array,
+                        mimetype="",  # Set MIME type for text files
+                    )
                     return json.dumps(
                         {"status": "success", "data": {"message": "script ran"}}
                     )

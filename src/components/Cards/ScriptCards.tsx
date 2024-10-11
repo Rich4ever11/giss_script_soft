@@ -59,7 +59,7 @@ function ScriptCards() {
           <AbsoluteCenter px="4" rounded={"full"}>
             <Text
               className="font-thin "
-              fontSize="6xl"
+              fontSize="2xl"
               textColor={"white"}
               padding={4}
             >

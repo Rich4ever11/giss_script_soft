@@ -21,8 +21,8 @@ def startReactFrontend():
     #         "[-] The node modules have not been installed %d"
     #         % installation_status.returncode
     #     )
-    # npm_package_install_result = subprocess.Popen("npm install", shell=True)
-    # print(npm_package_install_result)
+    npm_package_install_result = subprocess.Popen("npm install", shell=True)
+    print(npm_package_install_result)
     npm_run_result = subprocess.Popen("npm run start", shell=True)
     print(npm_run_result)
 
