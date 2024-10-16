@@ -32,7 +32,7 @@ function ScriptModal(props: {
   const [shapeHeight, setShapeHeight] = useState(90);
   const [shapeWidth, setShapeWidth] = useState(144);
   const [variableName, setVariableName] = useState<string>("");
-  const { fileName, netcdfData } = useGeoData();
+  const { netcdfData } = useGeoData();
   const { isOpen, onClose } = props;
 
   const handleCodeExecution = async () => {
