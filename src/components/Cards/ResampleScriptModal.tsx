@@ -18,8 +18,10 @@ import {
   NumberInputStepper,
   Stack,
   Input,
+  Select,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useGeoData } from "../../context/GeoDataContext";
 
 function ScriptModal(props: {
   isOpen: boolean;
@@ -30,6 +32,7 @@ function ScriptModal(props: {
   const [shapeHeight, setShapeHeight] = useState(90);
   const [shapeWidth, setShapeWidth] = useState(144);
   const [variableName, setVariableName] = useState<string>("");
+  const { fileName, netcdfData } = useGeoData();
   const { isOpen, onClose } = props;
 
   const handleCodeExecution = async () => {
@@ -71,11 +74,28 @@ function ScriptModal(props: {
               <Box className="pb-2">
                 <Text color="white">Variable Name</Text>
               </Box>
-              <Input
-                placeholder="Enter Variable Name"
-                className="mb-2 text-white"
-                onChange={(event) => setVariableName(event.target.value)}
-              ></Input>
+              <Select
+                size={"lg"}
+                onChange={(event: any) => setVariableName(event.target.value)}
+                bg="black"
+                color="white"
+              >
+                {netcdfData.variables.map(
+                  (
+                    variable: { name: string; dimensions: number[] },
+                    index: number
+                  ) => (
+                    <option
+                      value={variable.name}
+                      key={index}
+                      style={{ color: "black", backgroundColor: "black" }}
+                    >
+                      {variable.name}
+                    </option>
+                  )
+                )}
+              </Select>
+
               <SimpleGrid columns={2} className="pt-4 pb-2">
                 <Box>
                   <Text color="white">Shape Height</Text>
